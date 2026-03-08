@@ -52,3 +52,16 @@ aws ec2 modify-instance-attribute \
                             --query 'Reservations[*].Instances[*].InstanceId' \
                             --output text) --disable-api-stop
 ```
+
+### There is an EC2 instance named 'hey-ec2' under us-east-1 region, enable the stop termination protection
+
+Step 1: Check the status of this flag using disableApiTermination
+```bash
+aws ec2 describe-instance-attribute --instance-id $(aws ec2 describe-instances --filters 'Name=tag:Name,Values='devops-ec2'' --query 'Reservations[].Instances[].InstanceId' --output text) --attribute disableApiTermination
+```
+
+Step 2 : Modify the status from false to true.
+```bash
+aws ec2 modify-instance-attribute --instance-id $(aws ec2 describe-instances --filters 'Name=tag:Name,Values='devops-ec2'' --query 'Reservations[].Instances[].InstanceId' --output text) --disable-api-termination
+```
+![alt text](image.png)

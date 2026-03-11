@@ -69,3 +69,16 @@ aws ec2 modify-instance-attribute --instance-id $(aws ec2 describe-instances --f
 ### Attach the elastic IP to the EC2 instance
 
 Step 1: Get the EC2 instance id
+```bash
+aws ec2 describe-instances --filters "Name=tag:Name,Values=devops-ec2" --query "Reservations[*].Instances[*].InstanceId" --output text --region us-east-1
+```
+
+Step 2: Get the allocation ID for elastic IP
+```bash
+aws ec2 describe-addresses --filters "Name=tag:Name,Values=devops-ec2-eip" --query "Addresses[*].AllocationId" --output text --region us-east-1
+```
+
+Step 3: Associate the address
+```bash
+aws ec2 associate-address --instance-id <INSTANCE_ID> --allocation-id <ALLOCATION_ID> --region us-east-1
+```

@@ -65,3 +65,7 @@ Step 2 : Modify the status from false to true.
 aws ec2 modify-instance-attribute --instance-id $(aws ec2 describe-instances --filters 'Name=tag:Name,Values='devops-ec2'' --query 'Reservations[].Instances[].InstanceId' --output text) --disable-api-termination
 ```
 ![alt text](image.png)
+
+### Attach the elastic IP to the EC2 instance
+
+Step 1: Get the EC2 instance id

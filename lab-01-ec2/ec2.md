@@ -1,4 +1,4 @@
-### To obtain the list of EC2 Instance names in the account
+### 1. To obtain the list of EC2 Instance names in the account
 
 ```bash
 aws ec2 describe-instances \
@@ -6,7 +6,7 @@ aws ec2 describe-instances \
         --output text
 ```
 
-### There is an EC2 instance name hey-ec2, change the instance from t2.micro to t2.nano
+### 2. There is an EC2 instance name hey-ec2, change the instance from t2.micro to t2.nano
 
 Step 1: Obtain the instance ID
 ```bash
@@ -33,7 +33,7 @@ aws ec2 modify-instance-attribute \
         --instance-type "Value=t2.nano"
 ```
 
-### There is an EC2 instance named hey-ec2 under us-east-1 region, enable the stop protection for this instance
+### 3. There is an EC2 instance named hey-ec2 under us-east-1 region, enable the stop protection for this instance
 
 Step 1: Check the status of EC2 instance
 ```bash
@@ -53,7 +53,7 @@ aws ec2 modify-instance-attribute \
                             --output text) --disable-api-stop
 ```
 
-### There is an EC2 instance named 'hey-ec2' under us-east-1 region, enable the stop termination protection
+### 4. There is an EC2 instance named 'hey-ec2' under us-east-1 region, enable the stop termination protection
 
 Step 1: Check the status of this flag using disableApiTermination
 ```bash
@@ -66,7 +66,7 @@ aws ec2 modify-instance-attribute --instance-id $(aws ec2 describe-instances --f
 ```
 ![alt text](image.png)
 
-### Attach the elastic IP to the EC2 instance
+### 5. Attach the elastic IP to the EC2 instance
 
 Step 1: Get the EC2 instance id
 ```bash
@@ -82,3 +82,17 @@ Step 3: Associate the address
 ```bash
 aws ec2 associate-address --instance-id <INSTANCE_ID> --allocation-id <ALLOCATION_ID> --region us-east-1
 ```
+
+### 6. Attach the network interface to the EC2 instance
+
+Step 1: Set variables by searching for the Name tags 
+```bash
+INSTANCE_ID=$(aws ec2 describe-instances --region us-east-1 --filters "Name=tag:Name,Values=datacenter-ec2" --query "Reservations[0].Instances[0].InstanceId" --output text)
+ENI_ID=$(aws ec2 describe-network-interfaces --region us-east-1 --filters "Name=tag:Name,Values=datacenter-eni" --query "NetworkInterfaces[0].NetworkInterfaceId" --output text)
+```
+
+Step 2: Attach the network interface to device index 1
+```bash
+aws ec2 attach-network-interface --network-interface-id $ENI_ID --instance-id $INSTANCE_ID --device-index 1 --region us-east-1
+```
+
